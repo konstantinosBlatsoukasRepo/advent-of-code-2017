@@ -1,5 +1,6 @@
 file = open('input.txt')
 numbers = file.read()
+file.close()
 
 
 def captcha(numbers):
