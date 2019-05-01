@@ -62,25 +62,20 @@ def generate_sums(number):
     nums_coordinates[(0, 0)] = 1
 
     while True:
-        insert_values(nums_coordinates, x, y, square_length, False)
+        nums_coordinates[(x, y)] = compute_value(nums_coordinates, x, y)
         if nums_coordinates[(x, y)] > number:
             return nums_coordinates[(x, y)]
 
         y += 1
-        insert_values(nums_coordinates, x, y, square_length, False)
+        nums_coordinates[(x, y)] = compute_value(nums_coordinates, x, y)
         if nums_coordinates[(x, y)] > number:
             return nums_coordinates[(x, y)]
 
-        x += 1
-        insert_values(nums_coordinates, x, y, square_length, True)
-        if nums_coordinates[(x, y)] > number:
-            return nums_coordinates[(x, y)]
-
-        # for _ in range(0, square_length - 2):
-        #     x += 1
-        #     nums_coordinates[(x, y)] = compute_value(nums_coordinates, x, y)
-        #     if nums_coordinates[(x, y)] > number:
-        #         return nums_coordinates[(x, y)]
+        for _ in range(0, square_length - 2):
+            x += 1
+            nums_coordinates[(x, y)] = compute_value(nums_coordinates, x, y)
+            if nums_coordinates[(x, y)] > number:
+                return nums_coordinates[(x, y)]
 
         for _ in range(0, square_length - 1):
             y -= 1
@@ -103,17 +98,6 @@ def generate_sums(number):
         square_length += 2
 
     return nums_coordinates
-
-
-def insert_values(nums_coordinates, x, y, square_length, is_right):
-    upper_bound = 0
-    if is_right:
-        upper_bound = square_length - 2
-    else:
-        upper_bound = square_length - 1
-
-    for _ in range(0, upper_bound):
-        nums_coordinates[(x, y)] = compute_value(nums_coordinates, x, y)
 
 
 def compute_value(nums_coordinates, x, y):
