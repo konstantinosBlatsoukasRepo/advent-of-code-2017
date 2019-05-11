@@ -1,4 +1,4 @@
-astates_seen = set()
+states_seen = set()
 
 # part one
 
