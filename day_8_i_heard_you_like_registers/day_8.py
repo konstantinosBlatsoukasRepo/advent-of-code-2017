@@ -105,8 +105,11 @@ c inc -20 if c == 10
 """
 instructions, registers_values = parse(input)
 
+max_of_maxs = []
 for instruction in instructions:
     if condition_result(instruction, registers_values):
         execute_command(instruction, registers_values)
+        max_of_maxs.append(max(registers_values.values()))
 
 print(max(registers_values.values()))
+print(max(max_of_maxs))
