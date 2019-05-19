@@ -4,13 +4,19 @@ def count_groups(input):
     depth = 0
     total_score = 0
 
+    total_garbage_chars = 0
+    total_ignored = 0
+
     for c in input:
         if in_ignore:
             in_ignore = False
         elif c == "!":
             in_ignore = True
-        elif c == ">":
-            in_garbage = False
+        elif in_garbage:
+            if c == ">":
+                in_garbage = False
+            else:
+                total_garbage_chars += 1
         elif c == "<":
             in_garbage = True
         elif c == "{" and not in_garbage:
@@ -18,23 +24,30 @@ def count_groups(input):
             total_score += depth
         elif c == "}" and not in_garbage:
             depth -= 1
-    return total_score
 
-
-assert count_groups("{}") == 1
-assert count_groups("{{{}}}") == 6
-assert count_groups("{{},{}}") == 5
-assert count_groups("{{{},{},{{}}}}") == 16
-assert count_groups("{<a>,<a>,<a>,<a>}") == 1
-assert count_groups("{{<ab>},{<ab>},{<ab>},{<ab>}}") == 9
-assert count_groups("{{<!!>},{<!!>},{<!!>},{<!!>}}") == 9
-assert count_groups("{{<a!>},{<a!>},{<a!>},{<ab>}}") == 3
-
-# {{<ab>},{<ab>},{<ab>},{<ab>}}, score of 1 + 2 + 2 + 2 + 2 = 9.
-# {{<!!>},{<!!>},{<!!>},{<!!>}}, score of 1 + 2 + 2 + 2 + 2 = 9.
-# {{<a!>},{<a!>},{<a!>},{<ab>}}, score of 1 + 2 = 3.
+    return (total_score, total_garbage_chars)
 
 
 file = open("input.txt")
 rows = file.read()
-print(count_groups(rows))
+
+total_score, total_garbage_chars = count_groups(rows)
+print(total_score)
+print(total_garbage_chars)
+assert total_score == 9662
+
+
+total_score, total_garbage_chars = count_groups("<>")
+assert total_garbage_chars == 0
+total_score, total_garbage_chars = count_groups("<random characters>")
+assert total_garbage_chars == 17
+total_score, total_garbage_chars = count_groups("<<<<>")
+assert total_garbage_chars == 3
+total_score, total_garbage_chars = count_groups("<{!>}>")
+assert total_garbage_chars == 2
+total_score, total_garbage_chars = count_groups("<!!>")
+assert total_garbage_chars == 0
+total_score, total_garbage_chars = count_groups("<!!!>>")
+assert total_garbage_chars == 0
+total_score, total_garbage_chars = count_groups("<{o\"i!a,<{i<a>")
+assert total_garbage_chars == 10
