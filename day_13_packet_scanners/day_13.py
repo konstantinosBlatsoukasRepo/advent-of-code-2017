@@ -1,3 +1,5 @@
+import copy
+
 from typing import List, Set
 
 DOWN = "down"
@@ -58,7 +60,7 @@ def is_caught_by_scanner(layer: Layer, current_picosecond: int) -> bool:
     return layer.scanner == 0 and current_picosecond == layer.depth and layer.range != 0
 
 
-def compute_severity(layers: List[Layer]) -> int:
+def compute_severities(layers: List[Layer]) -> List[int]:
     total_picoseconds = max_depth(layers)
     severities = []
     for current_picosecond in range(0, total_picoseconds + 1):
@@ -68,10 +70,35 @@ def compute_severity(layers: List[Layer]) -> int:
 
         update_layers(layers, current_picosecond)
 
-    return sum(severities)
+    return severities
 
 
-file = open('day13_input.txt')
-input = file.read()
+# print(sum(compute_severities(layers)))
+
+
+def delay(layers):
+    total_delays = 1
+    copied_layers = copy.deepcopy(layers)
+    severities = compute_severities(copied_layers)
+
+    while severities != []:
+        copied_layers = copy.deepcopy(layers)
+        update_layers(copied_layers, total_delays)
+        print(copied_layers)
+
+        severities = compute_severities(copied_layers)
+        total_delays += 1
+    return total_delays
+
+
+# file = open('day13_input.txt')
+# input = file.read()
+input = """0: 3
+1: 2
+4: 4
+6: 4
+"""
+
 layers = parse(input)
-print(compute_severity(layers))
+
+print(delay(layers))
